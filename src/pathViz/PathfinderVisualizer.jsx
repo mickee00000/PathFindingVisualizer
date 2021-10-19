@@ -21,8 +21,7 @@ export default class PathfinderVisualizer extends React.Component{
 
     getInitialGrid(){
         const grid = [];
-        // trying more
-        const trying_gain;
+
 
     }
 
