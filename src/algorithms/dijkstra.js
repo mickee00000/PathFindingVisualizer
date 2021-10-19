@@ -20,6 +20,6 @@ return nodes;
 }
 
 function sortNodesByDistance(unvisitedNodes){
-    newNodes.sort((a, b) => a.distance - b.distance)
+    unvisitedNodes.sort((a, b) => a.distance - b.distance)
 }
 
