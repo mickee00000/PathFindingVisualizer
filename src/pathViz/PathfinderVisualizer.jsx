@@ -11,22 +11,39 @@ export default class PathfinderVisualizer extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            nodes: [],
+            grid: [],
+            isMousePressed: false,
+
         };
     }
 
-    createNode(col, row){
+    createNode(row, col){
         return {col, row, isStart: row === START_NODE_ROW && col === START_NODE_COL, isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL, distance: Infinity, isVisited: false, isWall: false, previousNode: null }
     }
 
     getInitialGrid(){
         const grid = [];
-
-
+        for (let i=0; i<20; i++){
+        const tempRow = [];
+            for (let j=0; j<50; j++){
+                tempRow.push(this.createNode(i,j))
+            }
+            grid.push(tempRow);
+        }
+        return grid;
     }
 
     componentDidMount() {
+        const grid = this.getInitialGrid();
+        this.setState({grid});
 
+    }
+
+    visualizeDijkstra(){
+        const {grid} = this.state;
+        const startNode = grid[START_NODE_ROW][START_NODE_COL];
+        const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+        const StoredVisitedNodes = dijkshtra(grid, startNode, finishNode)
 
     }
 
@@ -41,13 +58,16 @@ export default class PathfinderVisualizer extends React.Component{
                             {row.map((node, nodeIdx) =>{
                                 const {isStart, isFinish} = node;
                                 return(
-                                    <Node key={nodeIdx} isStart={isStart} isFinish={isFinish}/>
+                                    <Node key={nodeIdx}
+                                          isStart={isStart}
+                                          isFinish={isFinish}
+                                    />
                                 )
                             })}
                         </div>
                     }
                 )}
-                <button className="baseBtn">Visualize Dijkstra's Algorithm</button>
+                <button className="baseBtn" onClick={() => this.visualizeDijkstra()}>Visualize Dijkstra's Algorithm</button>
                 <button className="baseBtn">Clear Board</button>
 
             </div>
