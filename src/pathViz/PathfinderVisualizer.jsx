@@ -1,6 +1,7 @@
 import React from "react";
 import './PathfinderVisualizer.css';
 import Node from './node';
+import {dijkshtra, findShortestPath} from "../algorithms/dijkstra";
 
 const START_NODE_ROW = 10;
 const START_NODE_COL = 15;
@@ -12,7 +13,7 @@ export default class PathfinderVisualizer extends React.Component{
         super(props);
         this.state = {
             grid: [],
-            isMousePressed: false,
+/*            isMousePressed: false,*/
 
         };
     }
@@ -43,25 +44,72 @@ export default class PathfinderVisualizer extends React.Component{
         const {grid} = this.state;
         const startNode = grid[START_NODE_ROW][START_NODE_COL];
         const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
-        const StoredVisitedNodes = dijkshtra(grid, startNode, finishNode)
 
+        const StoredVisitedNodes = dijkshtra(grid, startNode, finishNode)
+        const ShortestPathNodes = findShortestPath(finishNode);
+
+        this.animateDijkstra(StoredVisitedNodes,ShortestPathNodes);
     }
 
+    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
+        for (let i = 0; i <= visitedNodesInOrder.length; i++) {
+            if (i === visitedNodesInOrder.length) {
+                setTimeout(() => {
+                    this.animateShortestPath(nodesInShortestPathOrder);
+                }, 30 * i);
+                return;
+            }
+            setTimeout(() => {
+                const node = visitedNodesInOrder[i];
+                document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-visited';
+            }, 30 * i);
+        }
+    }
+
+    animateShortestPath(nodesInShortestPathOrder) {
+        for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+            setTimeout(() => {
+                const node = nodesInShortestPathOrder[i];
+                document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-shortest-path';
+            }, 50 * i);
+        }
+    }
+
+    handleMouseDown(row, col) {
+        const newGrid = this.getNewGridWithWallToggled(this.state.grid, row, col);
+        this.setState({grid: newGrid, mouseIsPressed: true});
+    }
+
+    getNewGridWithWallToggled(grid, row, col){
+        const newGrid = grid.slice();
+        const node = newGrid[row][col];
+        const newNode = {
+            ...node,
+            isWall: !node.isWall,
+        };
+        newGrid[row][col] = newNode;
+        return newGrid;
+    };
+
     render() {
-        const {nodes} = this.state;
-        console.log(nodes)
+        const {grid} = this.state;
+        console.log(grid)
 
         return (
             <div className="grid">
-                {nodes.map((row, rowIdx) => {
+                {grid.map((row, rowIdx) => {
                         return <div key={rowIdx}>
                             {row.map((node, nodeIdx) =>{
-                                const {isStart, isFinish} = node;
+                                const {row, col, isFinish, isStart, isWall} = node;
                                 return(
-                                    <Node key={nodeIdx}
-                                          isStart={isStart}
-                                          isFinish={isFinish}
-                                    />
+                                    <Node
+                                        key={nodeIdx}
+                                        col={col}
+                                        isFinish={isFinish}
+                                        isStart={isStart}
+                                        isWall={isWall}
+                                        onMouseDown={(row, col) => this.handleMouseDown(row, col)}
+                                        row={row}/>
                                 )
                             })}
                         </div>
@@ -74,3 +122,4 @@ export default class PathfinderVisualizer extends React.Component{
         );
     }
 }
+
