@@ -2,6 +2,8 @@ import React from "react";
 import './PathfinderVisualizer.css';
 import Node from './node';
 import {dijkshtra, findShortestPath} from "../algorithms/dijkstra";
+import {unweightedSearchAlgorithm} from "../algorithms/unweightedSearchAlgorithm";
+import {BFS} from "../algorithms/BFS";
 
 const START_NODE_ROW = 10;
 const START_NODE_COL = 15;
@@ -51,6 +53,17 @@ export default class PathfinderVisualizer extends React.Component{
         this.animateDijkstra(StoredVisitedNodes,ShortestPathNodes);
     }
 
+    visualizeBFS(){
+        const {grid} = this.state;
+        const startNode = grid[START_NODE_ROW][START_NODE_COL];
+        const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+
+        const StoredVisitedNodes = BFS(grid, startNode, finishNode)
+        const ShortestPathNodes = findShortestPath(finishNode);
+
+        this.animateDijkstra(StoredVisitedNodes,ShortestPathNodes);
+    }
+
     animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
         for (let i = 0; i <= visitedNodesInOrder.length; i++) {
             if (i === visitedNodesInOrder.length) {
@@ -91,6 +104,10 @@ export default class PathfinderVisualizer extends React.Component{
         return newGrid;
     };
 
+    clearBoard(){
+        window.location.reload(false);
+    }
+
     render() {
         const {grid} = this.state;
         console.log(grid)
@@ -116,7 +133,9 @@ export default class PathfinderVisualizer extends React.Component{
                     }
                 )}
                 <button className="baseBtn" onClick={() => this.visualizeDijkstra()}>Visualize Dijkstra's Algorithm</button>
-                <button className="baseBtn">Clear Board</button>
+                <button className="baseBtn" onClick={() => this.visualizeBFS()}>Visualize BFS</button>
+                <button className="baseBtn" onClick={() => this.visualizeDFS()}>Visualize DFS</button>
+                <button className="baseBtn" onClick={() => this.clearBoard()}>Clear Board</button>
 
             </div>
         );
