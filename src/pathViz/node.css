@@ -1,28 +1,27 @@
 .node {
-    width: 25px;
-    height: 25px;
-    outline: 1px solid black;
-    display: inline-block;
+  width: 25px;
+  height: 25px;
+  outline: 1px solid black;
+  border-radius: 3px;
+  display: inline-block;
 }
 
 .node-finish {
-    background-color: green;
+  background-color: green;
 }
 
 .node-start {
-    background-color: orangered;
+  background-color: orangered;
 }
 
 .node-visited {
-    background-color: blue;
+  background-color: blue;
 }
 
 .node-wall {
-    background-color: black;
+  background-color: black;
 }
 
 .node-shortest-path {
-    background-color: yellow;
+  background-color: yellow;
 }
-
-
